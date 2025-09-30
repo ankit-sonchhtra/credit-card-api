@@ -1,0 +1,228 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-09-30T15:06:00.953Z",
+  "__export_source": "insomnia.desktop.app:v9.2.0",
+  "resources": [
+    {
+      "_id": "req_480b8d1a115c4d62963657dd1584ae6f",
+      "parentId": "fld_6ec805414bba4a4bafff129721cb0fac",
+      "modified": 1759240632303,
+      "created": 1759132249583,
+      "url": "http://localhost:8080/api/credit-card-api/v1/users",
+      "name": "Create User",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"email\": \"ankit@abc.com\",\n\t\"name\":\"Ankit S\",\n\t\"mobileNumber\": \"8000099991\"\n}"
+      },
+      "preRequestScript": "",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.2.0"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1759135601991,
+      "isPrivate": false,
+      "pathParameters": [],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_6ec805414bba4a4bafff129721cb0fac",
+      "parentId": "wrk_scratchpad",
+      "modified": 1759135636029,
+      "created": 1759135581752,
+      "name": "User",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1759135590268.75,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_scratchpad",
+      "parentId": null,
+      "modified": 1715159572328,
+      "created": 1715159572328,
+      "name": "Scratch Pad",
+      "description": "",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "req_5266a97eb4284f8f9133b64a60d71fbe",
+      "parentId": "fld_2c007d33675b47989f0f4ab4d9895766",
+      "modified": 1759240231711,
+      "created": 1758867078472,
+      "url": "http://localhost:8080/api/credit-card-api/v1/accounts/2cb37f39-48d2-4401-8910-1ace08f28f93",
+      "name": "Get Account",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "preRequestScript": "",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.2.0"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1759141248877,
+      "isPrivate": false,
+      "pathParameters": [],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_2c007d33675b47989f0f4ab4d9895766",
+      "parentId": "wrk_scratchpad",
+      "modified": 1759135588661,
+      "created": 1759135588661,
+      "name": "Account",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1759135588661,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_6bfab44574474ff0bfe34cd8af2c6177",
+      "parentId": "fld_2c007d33675b47989f0f4ab4d9895766",
+      "modified": 1759240213802,
+      "created": 1758868955669,
+      "url": "http://localhost:8080/api/credit-card-api/v1/accounts",
+      "name": "Create Account",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"userId\":\"6afd969d-f1b2-4e0d-ad42-adafb5ea4d9e\",\n\t\"documentNumber\": \"9909987654\"\n}"
+      },
+      "preRequestScript": "",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.2.0"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1759141248777,
+      "isPrivate": false,
+      "pathParameters": [],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_2486ead73ba94676b4e052730a5335f0",
+      "parentId": "fld_7d703423bd1a4883b09b6255b601be58",
+      "modified": 1759240267241,
+      "created": 1758868973091,
+      "url": "http://localhost:8080/api/credit-card-api/v1/transactions",
+      "name": "Create Transaction",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"accountId\": \"2cb37f39-48d2-4401-8910-1ace08f28f93\",\n\t\"operationType\": \"cash purchase\",\n\t\"amount\": -123.45\n}"
+      },
+      "preRequestScript": "",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "User-Agent",
+          "value": "insomnia/9.2.0"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1759135642787,
+      "isPrivate": false,
+      "pathParameters": [],
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_7d703423bd1a4883b09b6255b601be58",
+      "parentId": "wrk_scratchpad",
+      "modified": 1759135637892,
+      "created": 1759135595092,
+      "name": "Transaction",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1759135583379.25,
+      "_type": "request_group"
+    },
+    {
+      "_id": "env_99d30891da4bdcebc63947a8fc17f076de878684",
+      "parentId": "wrk_scratchpad",
+      "modified": 1759175966468,
+      "created": 1758867061080,
+      "name": "Base Environment",
+      "data": {
+        "auth": {
+          "token": "{{ 'my custom template logic' | urlencode }}"
+        }
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "auth"
+        ],
+        "&~|auth": [
+          "token"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1758867061080,
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_99d30891da4bdcebc63947a8fc17f076de878684",
+      "parentId": "wrk_scratchpad",
+      "modified": 1758867061083,
+      "created": 1758867061083,
+      "name": "Default Jar",
+      "cookies": [],
+      "_type": "cookie_jar"
+    }
+  ]
+}
