@@ -185,6 +185,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.BadRequestError"
                         }
                     },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/models.ConflictError"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -215,6 +221,28 @@ const docTemplate = `{
                 "errorMessage": {
                     "type": "string",
                     "example": "invalid request body"
+                }
+            }
+        },
+        "models.ConflictError": {
+            "type": "object",
+            "properties": {
+                "additionalData": {
+                    "type": "object",
+                    "properties": {
+                        "statusCode": {
+                            "type": "integer",
+                            "example": 409
+                        }
+                    }
+                },
+                "errorCode": {
+                    "type": "string",
+                    "example": "ERR_CC_USER_ALREADY_EXIST"
+                },
+                "errorMessage": {
+                    "type": "string",
+                    "example": "user already exist with requested mobile number"
                 }
             }
         },

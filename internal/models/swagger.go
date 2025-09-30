@@ -23,3 +23,10 @@ type NotFoundError struct {
 		StatusCode int `json:"statusCode" example:"404"`
 	} `json:"additionalData"`
 }
+type ConflictError struct {
+	ErrorCode      string `json:"errorCode" example:"ERR_CC_USER_ALREADY_EXIST"`
+	ErrorMessage   string `json:"errorMessage" example:"user already exist with requested mobile number"`
+	AdditionalData struct {
+		StatusCode int64 `json:"statusCode" example:"409"`
+	} `json:"additionalData"`
+}

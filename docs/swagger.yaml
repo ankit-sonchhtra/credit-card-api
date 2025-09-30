@@ -15,6 +15,21 @@ definitions:
         example: invalid request body
         type: string
     type: object
+  models.ConflictError:
+    properties:
+      additionalData:
+        properties:
+          statusCode:
+            example: 409
+            type: integer
+        type: object
+      errorCode:
+        example: ERR_CC_USER_ALREADY_EXIST
+        type: string
+      errorMessage:
+        example: user already exist with requested mobile number
+        type: string
+    type: object
   models.CreateAccountRequest:
     properties:
       documentNumber:
@@ -235,6 +250,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.BadRequestError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/models.ConflictError'
         "500":
           description: Internal Server Error
           schema:

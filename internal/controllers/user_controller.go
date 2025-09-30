@@ -35,6 +35,7 @@ func NewUserController(userService services.UserService) UserController {
 // @Param CreateUserRequest body models.CreateUserRequest true "Request Body"
 // @Success      201  {object}  models.CreateUserResponse
 // @Failure      400  {object}  models.BadRequestError
+// @Failure      409  {object}  models.ConflictError
 // @Failure      500  {object}  models.InternalServerError
 // @Router       /api/credit-card-api/v1/users [post]
 func (ac *userController) CreateUser(ctx *gin.Context) {
