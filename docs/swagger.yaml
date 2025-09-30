@@ -77,7 +77,7 @@ definitions:
         example: john.deo@xyz.com
         type: string
       mobileNumber:
-        example: "9825212345"
+        example: "+919825212345"
         type: string
       name:
         example: John Deo

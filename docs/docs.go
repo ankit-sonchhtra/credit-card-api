@@ -317,7 +317,7 @@ const docTemplate = `{
                 },
                 "mobileNumber": {
                     "type": "string",
-                    "example": "9825212345"
+                    "example": "+919825212345"
                 },
                 "name": {
                     "type": "string",
