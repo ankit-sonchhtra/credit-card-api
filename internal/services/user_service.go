@@ -5,11 +5,11 @@ package services
 import (
 	"context"
 
-	"github.com/credit-card-service/internal/models"
-	"github.com/credit-card-service/internal/repository"
-	"github.com/credit-card-service/internal/repository/model"
-	"github.com/credit-card-service/pkg/constants"
-	"github.com/credit-card-service/pkg/utils"
+	"github.com/credit-card-api/internal/models"
+	"github.com/credit-card-api/internal/repository"
+	"github.com/credit-card-api/internal/repository/model"
+	"github.com/credit-card-api/pkg/constants"
+	"github.com/credit-card-api/pkg/utils"
 	"github.com/google/uuid"
 )
 

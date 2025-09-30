@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"github.com/credit-card-service/internal/models"
-	"github.com/credit-card-service/pkg/constants"
+	"github.com/credit-card-api/internal/models"
+	"github.com/credit-card-api/pkg/constants"
 )
 
 func NewCCInternalServerError() *models.CCError {

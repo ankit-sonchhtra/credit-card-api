@@ -8,8 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/credit-card-service/internal/models"
-	"github.com/credit-card-service/internal/services/mocks"
+	"github.com/credit-card-api/internal/models"
+	"github.com/credit-card-api/internal/services/mocks"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
 	"go.uber.org/mock/gomock"

@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/credit-card-service/internal/repository/model"
+	"github.com/credit-card-api/internal/repository/model"
 	"github.com/stretchr/testify/require"
 	"go.mongodb.org/mongo-driver/bson"
 

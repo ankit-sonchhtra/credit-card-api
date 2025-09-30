@@ -10,10 +10,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/credit-card-service/bootstrap"
-	_ "github.com/credit-card-service/docs"
-	"github.com/credit-card-service/internal/routes"
-	"github.com/credit-card-service/pkg/constants"
+	"github.com/credit-card-api/bootstrap"
+	_ "github.com/credit-card-api/docs"
+	"github.com/credit-card-api/internal/routes"
+	"github.com/credit-card-api/pkg/constants"
 	logger "github.com/sirupsen/logrus"
 )
 

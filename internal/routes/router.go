@@ -1,11 +1,11 @@
 package routes
 
 import (
-	"github.com/credit-card-service/bootstrap"
-	"github.com/credit-card-service/internal/controllers"
-	"github.com/credit-card-service/internal/repository"
-	"github.com/credit-card-service/internal/services"
-	"github.com/credit-card-service/pkg/constants"
+	"github.com/credit-card-api/bootstrap"
+	"github.com/credit-card-api/internal/controllers"
+	"github.com/credit-card-api/internal/repository"
+	"github.com/credit-card-api/internal/services"
+	"github.com/credit-card-api/pkg/constants"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"

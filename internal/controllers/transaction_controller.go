@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/credit-card-service/internal/models"
-	"github.com/credit-card-service/internal/services"
-	"github.com/credit-card-service/pkg/constants"
-	"github.com/credit-card-service/pkg/utils"
+	"github.com/credit-card-api/internal/models"
+	"github.com/credit-card-api/internal/services"
+	"github.com/credit-card-api/pkg/constants"
+	"github.com/credit-card-api/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 

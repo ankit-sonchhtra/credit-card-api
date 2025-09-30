@@ -1,4 +1,4 @@
-module github.com/credit-card-service
+module github.com/credit-card-api
 
 go 1.24.0
 

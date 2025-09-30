@@ -37,7 +37,7 @@ docker ps
 #### Option 2:Run With docker-compose
 - Build Local Application Binary
 
-    ```go build .```
+    ```go build -o credit-card-api .```
 
 - Run App and Database container
 
@@ -49,15 +49,11 @@ docker ps
 
   ```export MONGO_URI=mongodb://localhost:27017```
 
-- Build Local Application Binary
-
-  ```go build .```
-
 - Start an application
 
   ```go run main.go```
 
-Go to Below URL, Congratulations !!!!!
+#### Swagger
 
 **URL:** http://localhost:8080/swagger/index.html
 

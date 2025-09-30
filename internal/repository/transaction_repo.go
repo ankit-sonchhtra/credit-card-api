@@ -5,7 +5,7 @@ package repository
 import (
 	"context"
 
-	"github.com/credit-card-service/internal/repository/model"
+	"github.com/credit-card-api/internal/repository/model"
 	logger "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 )

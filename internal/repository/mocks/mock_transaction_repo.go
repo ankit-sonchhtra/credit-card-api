@@ -13,7 +13,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	model "github.com/credit-card-service/internal/repository/model"
+	model "github.com/credit-card-api/internal/repository/model"
 	gomock "go.uber.org/mock/gomock"
 )
 

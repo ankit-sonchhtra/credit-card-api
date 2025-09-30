@@ -6,8 +6,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/credit-card-service/internal/repository/model"
-	"github.com/credit-card-service/pkg/constants"
+	"github.com/credit-card-api/internal/repository/model"
+	"github.com/credit-card-api/pkg/constants"
 	logger "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
