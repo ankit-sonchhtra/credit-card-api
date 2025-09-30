@@ -1,0 +1,247 @@
+basePath: /api/v1
+definitions:
+  models.BadRequestError:
+    properties:
+      additionalData:
+        properties:
+          statusCode:
+            example: 400
+            type: integer
+        type: object
+      errorCode:
+        example: ERR_CC_BAD_REQUEST
+        type: string
+      errorMessage:
+        example: invalid request body
+        type: string
+    type: object
+  models.CreateAccountRequest:
+    properties:
+      documentNumber:
+        example: "0987654321"
+        type: string
+      userId:
+        example: 92d68c0e-dafe-406a-a0f2-8faae2020947
+        type: string
+    required:
+    - documentNumber
+    - userId
+    type: object
+  models.CreateAccountResponse:
+    properties:
+      accountId:
+        example: 92d68c0e-dafe-406a-a0f2-8faae2020947
+        type: string
+      documentNumber:
+        example: "0987654321"
+        type: string
+    type: object
+  models.CreateTransactionRequest:
+    properties:
+      accountId:
+        example: 92d68c0e-dafe-406a-a0f2-8faae2020947
+        type: string
+      amount:
+        example: -123.45
+        type: number
+      operationType:
+        example: cash purchase | installment purchase | withdrawal | payment
+        type: string
+    required:
+    - accountId
+    type: object
+  models.CreateTransactionResponse:
+    properties:
+      transactionId:
+        example: 82dfa288-28b5-430f-9b54-a4f99e546a40
+        type: string
+    type: object
+  models.CreateUserRequest:
+    properties:
+      email:
+        example: john.deo@xyz.com
+        type: string
+      mobileNumber:
+        example: "9825212345"
+        type: string
+      name:
+        example: John Deo
+        type: string
+    required:
+    - mobileNumber
+    type: object
+  models.CreateUserResponse:
+    properties:
+      userId:
+        example: 92d68c0e-dafe-406a-a0f2-8faae2020947
+        type: string
+    type: object
+  models.GetAccountResponse:
+    properties:
+      accountId:
+        example: 92d68c0e-dafe-406a-a0f2-8faae2020947
+        type: string
+      documentNumber:
+        example: "0987654321"
+        type: string
+      userId:
+        example: 92d68c0e-dafe-406a-a0f2-8faae2020947
+        type: string
+    type: object
+  models.InternalServerError:
+    properties:
+      additionalData:
+        properties:
+          statusCode:
+            example: 500
+            type: integer
+        type: object
+      errorCode:
+        example: ERR_CC_INTERNAL_SERVER_ERROR
+        type: string
+      errorMessage:
+        example: internal server error
+        type: string
+    type: object
+  models.NotFoundError:
+    properties:
+      additionalData:
+        properties:
+          statusCode:
+            example: 404
+            type: integer
+        type: object
+      errorCode:
+        example: ERR_CC_ACCOUNT_NOT_PRESENT
+        type: string
+      errorMessage:
+        example: account not present
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: credit card api which support to make payment.
+  title: Credit Card API
+  version: "1.0"
+paths:
+  /api/credit-card-api/v1/accounts:
+    post:
+      consumes:
+      - application/json
+      description: Create an account by request payload
+      parameters:
+      - description: Request Body
+        in: body
+        name: CreateAccountRequest
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CreateAccountResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.InternalServerError'
+      summary: Create an account
+      tags:
+      - Accounts
+  /api/credit-card-api/v1/accounts/{accountId}:
+    get:
+      description: Get an account by accountId
+      parameters:
+      - description: accountId
+        in: path
+        name: accountId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAccountResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.NotFoundError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.InternalServerError'
+      summary: Get an account
+      tags:
+      - Accounts
+  /api/credit-card-api/v1/transactions:
+    post:
+      consumes:
+      - application/json
+      description: Create transaction by request payload
+      parameters:
+      - description: Request Body
+        in: body
+        name: CreateTransactionRequest
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CreateTransactionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.InternalServerError'
+      summary: Create transaction
+      tags:
+      - Transactions
+  /api/credit-card-api/v1/users:
+    post:
+      consumes:
+      - application/json
+      description: Create an user by request payload
+      parameters:
+      - description: Request Body
+        in: body
+        name: CreateUserRequest
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CreateUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.InternalServerError'
+      summary: Create an user
+      tags:
+      - Users
+schemes:
+- http
+swagger: "2.0"

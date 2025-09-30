@@ -1,0 +1,29 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin123
+    volumes:
+      - mongo_data:/data/db
+      - ./migrations/mongo-init:/docker-entrypoint-initdb.d
+
+  credit-card-api:
+    build:
+      context: .
+      dockerfile: infrastructure/Dockerfile
+    image: credit-card-api:latest
+    container_name: credit-card-api
+    ports:
+      - "9090:8080"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://admin:admin123@mongodb:27017/credit-card-api?authSource=admin
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
