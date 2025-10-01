@@ -55,17 +55,17 @@ func (mr *MockUserRepositoryMockRecorder) CreateUser(ctx, userDoc any) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockUserRepository)(nil).CreateUser), ctx, userDoc)
 }
 
-// GetUser mocks base method.
-func (m *MockUserRepository) GetUser(ctx context.Context, mobileNumber string) (*model.UserDocument, error) {
+// GetUserByFilters mocks base method.
+func (m *MockUserRepository) GetUserByFilters(ctx context.Context, filter map[string]any) (*model.UserDocument, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUser", ctx, mobileNumber)
+	ret := m.ctrl.Call(m, "GetUserByFilters", ctx, filter)
 	ret0, _ := ret[0].(*model.UserDocument)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetUser indicates an expected call of GetUser.
-func (mr *MockUserRepositoryMockRecorder) GetUser(ctx, mobileNumber any) *gomock.Call {
+// GetUserByFilters indicates an expected call of GetUserByFilters.
+func (mr *MockUserRepositoryMockRecorder) GetUserByFilters(ctx, filter any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockUserRepository)(nil).GetUser), ctx, mobileNumber)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByFilters", reflect.TypeOf((*MockUserRepository)(nil).GetUserByFilters), ctx, filter)
 }

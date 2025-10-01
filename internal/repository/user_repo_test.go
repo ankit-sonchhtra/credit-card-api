@@ -44,17 +44,20 @@ func TestCreateUser(t *testing.T) {
 	})
 }
 
-func TestGetUser(t *testing.T) {
+func TestGetUserByFilters(t *testing.T) {
 	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	mt.Run("it should return an user successfully", func(mt *mtest.T) {
 		userDoc := bson.D{
 			{Key: "user_id", Value: testUserId},
 			{Key: "name", Value: "John Doe"},
 		}
+		filter := bson.M{
+			"mobile_number": mobileNumber,
+		}
 		mt.AddMockResponses(mtest.CreateCursorResponse(1, "credit-card-api.users", mtest.FirstBatch, userDoc))
 
 		repo := userRepository{collection: mt.Coll}
-		user, err := repo.GetUser(context.Background(), mobileNumber)
+		user, err := repo.GetUserByFilters(context.Background(), filter)
 
 		require.NoError(t, err)
 		require.NotNil(t, user)
@@ -63,9 +66,11 @@ func TestGetUser(t *testing.T) {
 
 	mt.Run("it should return an error when user not found", func(mt *mtest.T) {
 		mt.AddMockResponses(mtest.CreateCursorResponse(0, "credit-card-api.users", mtest.FirstBatch))
-
+		filter := bson.M{
+			"mobile_number": mobileNumber,
+		}
 		repo := userRepository{collection: mt.Coll}
-		user, err := repo.GetUser(context.Background(), mobileNumber)
+		user, err := repo.GetUserByFilters(context.Background(), filter)
 
 		require.NoError(mt, err)
 		require.Nil(mt, user)
@@ -76,8 +81,11 @@ func TestGetUser(t *testing.T) {
 			mtest.WriteError{Code: 11000, Message: "some mongo error"},
 		))
 
+		filter := bson.M{
+			"mobile_number": mobileNumber,
+		}
 		repo := userRepository{collection: mt.Coll}
-		user, err := repo.GetUser(context.Background(), mobileNumber)
+		user, err := repo.GetUserByFilters(context.Background(), filter)
 
 		require.Error(mt, err)
 		require.Nil(mt, user)

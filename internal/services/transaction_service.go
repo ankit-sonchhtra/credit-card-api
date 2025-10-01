@@ -4,7 +4,6 @@ package services
 
 import (
 	"context"
-	"net/http"
 	"strings"
 
 	"github.com/credit-card-api/internal/models"
@@ -51,11 +50,7 @@ func (as *transactionService) validateAccountExist(ctx context.Context, request 
 	}
 
 	if account == nil {
-		return &models.CCError{
-			ErrorCode:      constants.BadRequestErrCode,
-			ErrorMessage:   constants.InvalidAccountIdErrMsg,
-			AdditionalData: models.AdditionalData{StatusCode: http.StatusBadRequest},
-		}
+		return utils.NewCCBadRequestError(constants.InvalidAccountIdErrMsg)
 	}
 
 	return nil

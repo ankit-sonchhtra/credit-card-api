@@ -7,7 +7,6 @@ import (
 	"errors"
 
 	"github.com/credit-card-api/internal/repository/model"
-	"github.com/credit-card-api/pkg/constants"
 	logger "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,7 +14,7 @@ import (
 
 type UserRepository interface {
 	CreateUser(ctx context.Context, userDoc model.UserDocument) error
-	GetUser(ctx context.Context, mobileNumber string) (*model.UserDocument, error)
+	GetUserByFilters(ctx context.Context, filter map[string]interface{}) (*model.UserDocument, error)
 }
 
 type userRepository struct {
@@ -36,12 +35,16 @@ func (ar *userRepository) CreateUser(ctx context.Context, userDoc model.UserDocu
 	return nil
 }
 
-func (ar *userRepository) GetUser(ctx context.Context, mobileNumber string) (user *model.UserDocument, err error) {
-	filter := bson.M{constants.MobileNumberFilter: mobileNumber}
+func (ar *userRepository) GetUserByFilters(ctx context.Context, filtersMap map[string]interface{}) (user *model.UserDocument, err error) {
+	filter := bson.M{}
+	for key, value := range filtersMap {
+		filter[key] = value
+	}
+
 	err = ar.collection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			logger.Infof("no user found with id: %s", mobileNumber)
+			logger.Infof("no user found")
 			return nil, nil
 		}
 

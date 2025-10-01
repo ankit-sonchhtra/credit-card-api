@@ -21,6 +21,7 @@ var (
 	accountId      string
 	userId         string
 	documentNumber string
+	testFilter     map[string]interface{}
 )
 
 type AccountServiceTestSuite struct {
@@ -28,6 +29,7 @@ type AccountServiceTestSuite struct {
 	context               context.Context
 	mockController        *gomock.Controller
 	mockAccountRepository *mocks.MockAccountRepository
+	mockUserRepository    *mocks.MockUserRepository
 	accountService        AccountService
 }
 
@@ -39,7 +41,9 @@ func (suite *AccountServiceTestSuite) SetupTest() {
 	suite.context = context.TODO()
 	suite.mockController = gomock.NewController(suite.T())
 	suite.mockAccountRepository = mocks.NewMockAccountRepository(suite.mockController)
-	suite.accountService = NewAccountService(suite.mockAccountRepository)
+	suite.mockUserRepository = mocks.NewMockUserRepository(suite.mockController)
+	suite.accountService = NewAccountService(suite.mockAccountRepository, suite.mockUserRepository)
+	testFilter = make(map[string]interface{})
 	accountId = "52fdfc07-2182-454f-963f-5f0f9a621d72"
 	userId = "cb9841df-c22e-4897-abfb-2411fad3e03d"
 	documentNumber = "0123456789"
@@ -56,6 +60,7 @@ func (suite *AccountServiceTestSuite) TestCreateAccount_Success() {
 		AccountId:      accountId,
 		DocumentNumber: documentNumber,
 	}
+	existingUser := &model.UserDocument{UserId: userId}
 	accDocument := model.AccountDocument{
 		AccountId:      accountId,
 		UserId:         userId,
@@ -64,13 +69,52 @@ func (suite *AccountServiceTestSuite) TestCreateAccount_Success() {
 		UpdatedAt:      1759170600000,
 	}
 
+	testFilter["user_id"] = userId
+	suite.mockUserRepository.EXPECT().GetUserByFilters(suite.context, testFilter).Return(existingUser, nil).Times(1)
 	suite.mockAccountRepository.EXPECT().CreateAccount(suite.context, accDocument).Return(nil)
 
 	response, err := suite.accountService.CreateAccount(suite.context, request)
 
 	suite.Nil(err)
 	suite.Equal(expectedResponse, response)
+}
 
+func (suite *AccountServiceTestSuite) TestCreateAccount_When_UserRepo_Returns_AnError() {
+	request := models.CreateAccountRequest{
+		UserId:         userId,
+		DocumentNumber: documentNumber,
+	}
+
+	testFilter["user_id"] = userId
+	suite.mockUserRepository.EXPECT().GetUserByFilters(suite.context, testFilter).Return(nil,
+		errors.New("failed to fetch")).Times(1)
+
+	response, err := suite.accountService.CreateAccount(suite.context, request)
+
+	suite.Equal(utils.NewCCInternalServerError(), err)
+	suite.Nil(response)
+}
+
+func (suite *AccountServiceTestSuite) TestCreateAccount_When_User_IsNotExist() {
+	request := models.CreateAccountRequest{
+		UserId:         userId,
+		DocumentNumber: documentNumber,
+	}
+	expectedErr := &models.CCError{
+		ErrorCode:      "ERR_CC_BAD_REQUEST",
+		ErrorMessage:   "user does not exists with requested userId",
+		AdditionalData: models.AdditionalData{StatusCode: 400},
+	}
+
+	testFilter["user_id"] = userId
+	suite.mockUserRepository.EXPECT().GetUserByFilters(suite.context, testFilter).Return(nil,
+		nil).Times(1)
+
+	response, err := suite.accountService.CreateAccount(suite.context, request)
+
+	suite.NotNil(err)
+	suite.Equal(expectedErr, err)
+	suite.Nil(response)
 }
 
 func (suite *AccountServiceTestSuite) TestCreateAccount_When_AccountRepo_Returns_AnError() {
@@ -86,7 +130,10 @@ func (suite *AccountServiceTestSuite) TestCreateAccount_When_AccountRepo_Returns
 		CreatedAt:      1759170600000,
 		UpdatedAt:      1759170600000,
 	}
+	existingUser := &model.UserDocument{UserId: userId}
 
+	testFilter["user_id"] = userId
+	suite.mockUserRepository.EXPECT().GetUserByFilters(suite.context, testFilter).Return(existingUser, nil).Times(1)
 	suite.mockAccountRepository.EXPECT().CreateAccount(suite.context, accDocument).Return(errors.New("failed to create"))
 
 	response, err := suite.accountService.CreateAccount(suite.context, request)

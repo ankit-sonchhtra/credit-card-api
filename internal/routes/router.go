@@ -21,7 +21,7 @@ func RegisterRoutes() *gin.Engine {
 
 	accountCollection := bootstrap.GetCollection(constants.AccountCollection)
 	accountRepository := repository.NewAccountRepository(accountCollection)
-	accountService := services.NewAccountService(accountRepository)
+	accountService := services.NewAccountService(accountRepository, userRepository)
 	accountController := controllers.NewAccountController(accountService)
 
 	transactionCollection := bootstrap.GetCollection(constants.TransactionCollection)
