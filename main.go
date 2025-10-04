@@ -20,6 +20,9 @@ import (
 func main() {
 
 	uri := os.Getenv(constants.MongoUri)
+	if uri == constants.EmptyString {
+		logger.Fatal("MONGO_URI env variable is not set with connection string.")
+	}
 
 	bootstrap.ConnectToDB(uri, constants.MongoDatabaseName)
 	router := routes.RegisterRoutes()

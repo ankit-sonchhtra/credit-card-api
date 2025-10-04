@@ -22,6 +22,7 @@ var (
 	InvalidMobileNumberErrMsg  = "invalid mobile number"
 	InternalServerErrMsg       = "internal server error"
 	AccountNotPresentErrMsg    = "account not present"
+	AmountCanNotBeZeroErrMsg   = "amount value can not be zero"
 	AmountMustBeNegativeErrMsg = "amount must be negative for purchases and withdrawals"
 	AmountMustBePositiveErrMsg = "amount must be positive for payments"
 	InvalidOperationTypeErrMsg = "invalid operation type"

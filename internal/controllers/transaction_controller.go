@@ -3,7 +3,6 @@ package controllers
 import (
 	"errors"
 	"net/http"
-	"strings"
 
 	"github.com/credit-card-api/internal/models"
 	"github.com/credit-card-api/internal/services"
@@ -61,19 +60,8 @@ func (tc *transactionController) CreateTransaction(ctx *gin.Context) {
 }
 
 func validateAmount(payload models.CreateTransactionRequest) error {
-	operationType := strings.ToLower(payload.OperationType)
-
-	switch operationType {
-	case constants.OpTypeCashPurchase, constants.OpTypeInstallmentPurchase, constants.OpTypeWithdrawal:
-		if payload.Amount >= 0 {
-			return errors.New(constants.AmountMustBeNegativeErrMsg)
-		}
-	case constants.OpTypePayment:
-		if payload.Amount <= 0 {
-			return errors.New(constants.AmountMustBePositiveErrMsg)
-		}
-	default:
-		return errors.New(constants.InvalidOperationTypeErrMsg)
+	if payload.Amount == 0 {
+		return errors.New(constants.AmountCanNotBeZeroErrMsg)
 	}
 	return nil
 }

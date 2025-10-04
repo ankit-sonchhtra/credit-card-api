@@ -3,13 +3,13 @@ package services
 import (
 	"context"
 	"errors"
-
 	"math/rand"
 	"testing"
 
 	"github.com/credit-card-api/internal/models"
 	"github.com/credit-card-api/internal/repository/mocks"
 	"github.com/credit-card-api/internal/repository/model"
+	"github.com/credit-card-api/pkg/constants"
 	"github.com/credit-card-api/pkg/utils"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
@@ -78,6 +78,82 @@ func (suite *TransactionServiceTestSuite) TestCreateTransaction_Success() {
 	suite.Nil(err)
 	suite.Equal(expectedResponse, response)
 
+}
+
+func (suite *TransactionServiceTestSuite) TestCreateTransaction_InvalidAmount_When_OperationType_Is_Payment() {
+	request := models.CreateTransactionRequest{
+		AccountId:     testAccountId,
+		OperationType: "payment",
+		Amount:        -12345.67,
+	}
+
+	expectedErr := &models.CCError{
+		ErrorCode:      constants.BadRequestErrCode,
+		ErrorMessage:   "amount must be positive for payments",
+		AdditionalData: models.AdditionalData{StatusCode: 400},
+	}
+
+	response, err := suite.transactionService.CreateTransaction(suite.context, request)
+
+	suite.Nil(response)
+	suite.Equal(expectedErr, err)
+}
+
+func (suite *TransactionServiceTestSuite) TestCreateTransaction_InvalidAmount_When_OperationType_Is_CashPurchase() {
+	request := models.CreateTransactionRequest{
+		AccountId:     testAccountId,
+		OperationType: "cash purchase",
+		Amount:        12345.67,
+	}
+
+	expectedErr := &models.CCError{
+		ErrorCode:      constants.BadRequestErrCode,
+		ErrorMessage:   "amount must be negative for purchases and withdrawals",
+		AdditionalData: models.AdditionalData{StatusCode: 400},
+	}
+
+	response, err := suite.transactionService.CreateTransaction(suite.context, request)
+
+	suite.Nil(response)
+	suite.Equal(expectedErr, err)
+}
+
+func (suite *TransactionServiceTestSuite) TestCreateTransaction_InvalidAmount_When_OperationType_Is_Withdrawal() {
+	request := models.CreateTransactionRequest{
+		AccountId:     testAccountId,
+		OperationType: "withdrawal",
+		Amount:        12345.67,
+	}
+
+	expectedErr := &models.CCError{
+		ErrorCode:      constants.BadRequestErrCode,
+		ErrorMessage:   "amount must be negative for purchases and withdrawals",
+		AdditionalData: models.AdditionalData{StatusCode: 400},
+	}
+
+	response, err := suite.transactionService.CreateTransaction(suite.context, request)
+
+	suite.Nil(response)
+	suite.Equal(expectedErr, err)
+}
+
+func (suite *TransactionServiceTestSuite) TestCreateTransaction_When_OperationType_Is_Invalid() {
+	request := models.CreateTransactionRequest{
+		AccountId:     testAccountId,
+		OperationType: "invalid ot",
+		Amount:        12345.67,
+	}
+
+	expectedErr := &models.CCError{
+		ErrorCode:      constants.BadRequestErrCode,
+		ErrorMessage:   "invalid operation type",
+		AdditionalData: models.AdditionalData{StatusCode: 400},
+	}
+
+	response, err := suite.transactionService.CreateTransaction(suite.context, request)
+
+	suite.Nil(response)
+	suite.Equal(expectedErr, err)
 }
 
 func (suite *TransactionServiceTestSuite) TestCreateTransaction_When_AccountRepo_Returns_AnError() {

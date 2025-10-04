@@ -2,7 +2,7 @@ package models
 
 type CreateTransactionRequest struct {
 	AccountId     string  `json:"accountId" example:"92d68c0e-dafe-406a-a0f2-8faae2020947" binding:"required,uuid"`
-	OperationType string  `json:"operationType" example:"cash purchase | installment purchase | withdrawal | payment"`
+	OperationType string  `json:"operationType" example:"cash purchase | installment purchase | withdrawal | payment" binding:"required"`
 	Amount        float64 `json:"amount" example:"-123.45"`
 }
 
