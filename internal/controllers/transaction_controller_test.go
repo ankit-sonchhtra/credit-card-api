@@ -96,7 +96,7 @@ func (suite *TransactionControllerTestSuite) TestCreateTransaction_Invalid_Opera
 		Amount:        12345.67,
 	}
 
-	expectedResponseBody := `{"errorCode":"ERR_CC_BAD_REQUEST","errorMessage":"invalid operation type","additionalData":{"statusCode":400}}`
+	expectedResponseBody := `{"errorCode":"ERR_CC_BAD_REQUEST","errorMessage":"invalid request body","additionalData":{"statusCode":400}}`
 
 	bodyBytes, _ := json.Marshal(payload)
 	req := httptest.NewRequest(http.MethodPost, "/transactions", bytes.NewReader(bodyBytes))
@@ -109,54 +109,14 @@ func (suite *TransactionControllerTestSuite) TestCreateTransaction_Invalid_Opera
 	suite.Equal(expectedResponseBody, suite.recorder.Body.String())
 }
 
-func (suite *TransactionControllerTestSuite) TestCreateTransaction_InvalidAmount_When_OperationType_Is_Payment() {
-	payload := models.CreateTransactionRequest{
-		AccountId:     testAccountId,
-		OperationType: "payment",
-		Amount:        -12345.67,
-	}
-
-	expectedResponseBody := `{"errorCode":"ERR_CC_BAD_REQUEST","errorMessage":"amount must be positive for payments","additionalData":{"statusCode":400}}`
-
-	bodyBytes, _ := json.Marshal(payload)
-	req := httptest.NewRequest(http.MethodPost, "/transactions", bytes.NewReader(bodyBytes))
-	req.Header.Set("Content-Type", "application/json")
-	suite.context.Request = req
-
-	suite.transactionController.CreateTransaction(suite.context)
-
-	suite.Equal(http.StatusBadRequest, suite.recorder.Code)
-	suite.Equal(expectedResponseBody, suite.recorder.Body.String())
-}
-
-func (suite *TransactionControllerTestSuite) TestCreateTransaction_InvalidAmount_When_OperationType_Is_CashPurchase() {
+func (suite *TransactionControllerTestSuite) TestCreateTransaction_Invalid_Amount() {
 	payload := models.CreateTransactionRequest{
 		AccountId:     testAccountId,
 		OperationType: "cash purchase",
-		Amount:        12345.67,
+		Amount:        0,
 	}
 
-	expectedResponseBody := `{"errorCode":"ERR_CC_BAD_REQUEST","errorMessage":"amount must be negative for purchases and withdrawals","additionalData":{"statusCode":400}}`
-
-	bodyBytes, _ := json.Marshal(payload)
-	req := httptest.NewRequest(http.MethodPost, "/transactions", bytes.NewReader(bodyBytes))
-	req.Header.Set("Content-Type", "application/json")
-	suite.context.Request = req
-
-	suite.transactionController.CreateTransaction(suite.context)
-
-	suite.Equal(http.StatusBadRequest, suite.recorder.Code)
-	suite.Equal(expectedResponseBody, suite.recorder.Body.String())
-}
-
-func (suite *TransactionControllerTestSuite) TestCreateTransaction_InvalidAmount_When_OperationType_Is_Withdrawal() {
-	payload := models.CreateTransactionRequest{
-		AccountId:     testAccountId,
-		OperationType: "withdrawal",
-		Amount:        12345.67,
-	}
-
-	expectedResponseBody := `{"errorCode":"ERR_CC_BAD_REQUEST","errorMessage":"amount must be negative for purchases and withdrawals","additionalData":{"statusCode":400}}`
+	expectedResponseBody := `{"errorCode":"ERR_CC_BAD_REQUEST","errorMessage":"amount value can not be zero","additionalData":{"statusCode":400}}`
 
 	bodyBytes, _ := json.Marshal(payload)
 	req := httptest.NewRequest(http.MethodPost, "/transactions", bytes.NewReader(bodyBytes))

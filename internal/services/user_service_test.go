@@ -19,6 +19,7 @@ var (
 	testUserId       string
 	testEmail        string
 	testMobileNumber string
+	filter           map[string]interface{}
 )
 
 type UserServiceTestSuite struct {
@@ -42,6 +43,7 @@ func (suite *UserServiceTestSuite) SetupTest() {
 	testMobileNumber = "+918908011223"
 	testEmail = "abc@xyz.com"
 	currentTime = mockNow
+	filter = make(map[string]interface{})
 	uuid.SetRand(rand.New(rand.NewSource(1)))
 }
 
@@ -62,7 +64,8 @@ func (suite *UserServiceTestSuite) TestCreateUser_Success() {
 		CreatedAt:    1759170600000,
 		UpdatedAt:    1759170600000,
 	}
-	suite.mockUserRepository.EXPECT().GetUser(suite.context, testMobileNumber).Return(nil, nil)
+	filter["mobile_number"] = testMobileNumber
+	suite.mockUserRepository.EXPECT().GetUserByFilters(suite.context, filter).Return(nil, nil)
 	suite.mockUserRepository.EXPECT().CreateUser(suite.context, userDocument).Return(nil)
 	response, err := suite.userService.CreateUser(suite.context, request)
 
@@ -76,8 +79,8 @@ func (suite *UserServiceTestSuite) TestCreateUser_Failed_When_GetUser_Fails() {
 		Email:        testEmail,
 		MobileNumber: testMobileNumber,
 	}
-
-	suite.mockUserRepository.EXPECT().GetUser(suite.context, testMobileNumber).Return(nil, errors.New("failed to fetch"))
+	filter["mobile_number"] = testMobileNumber
+	suite.mockUserRepository.EXPECT().GetUserByFilters(suite.context, filter).Return(nil, errors.New("failed to fetch"))
 	_, err := suite.userService.CreateUser(suite.context, request)
 
 	suite.NotNil(err)
@@ -103,8 +106,8 @@ func (suite *UserServiceTestSuite) TestCreateUser_Failed_When_User_IsAlready_Exi
 		CreatedAt:    1759170600000,
 		UpdatedAt:    1759170600000,
 	}
-
-	suite.mockUserRepository.EXPECT().GetUser(suite.context, testMobileNumber).Return(userDocument, nil)
+	filter["mobile_number"] = testMobileNumber
+	suite.mockUserRepository.EXPECT().GetUserByFilters(suite.context, filter).Return(userDocument, nil)
 
 	_, err := suite.userService.CreateUser(suite.context, request)
 
@@ -126,7 +129,8 @@ func (suite *UserServiceTestSuite) TestCreateUser_When_UserRepo_Returns_AnError(
 		CreatedAt:    1759170600000,
 		UpdatedAt:    1759170600000,
 	}
-	suite.mockUserRepository.EXPECT().GetUser(suite.context, testMobileNumber).Return(nil, nil)
+	filter["mobile_number"] = testMobileNumber
+	suite.mockUserRepository.EXPECT().GetUserByFilters(suite.context, filter).Return(nil, nil)
 	suite.mockUserRepository.EXPECT().CreateUser(suite.context, userDocument).Return(errors.New("failed to create"))
 	response, err := suite.userService.CreateUser(suite.context, request)
 

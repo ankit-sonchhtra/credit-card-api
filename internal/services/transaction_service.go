@@ -4,7 +4,7 @@ package services
 
 import (
 	"context"
-	"net/http"
+	"errors"
 	"strings"
 
 	"github.com/credit-card-api/internal/models"
@@ -30,6 +30,11 @@ func NewTransactionService(transactionRepo repository.TransactionRepository,
 }
 
 func (as *transactionService) CreateTransaction(ctx context.Context, request models.CreateTransactionRequest) (*models.CreateTransactionResponse, *models.CCError) {
+	txnValidationErr := validateTransactionRules(request)
+	if txnValidationErr != nil {
+		return nil, utils.NewCCBadRequestError(txnValidationErr.Error())
+	}
+
 	err := as.validateAccountExist(ctx, request)
 	if err != nil {
 		return nil, err
@@ -51,11 +56,7 @@ func (as *transactionService) validateAccountExist(ctx context.Context, request 
 	}
 
 	if account == nil {
-		return &models.CCError{
-			ErrorCode:      constants.BadRequestErrCode,
-			ErrorMessage:   constants.InvalidAccountIdErrMsg,
-			AdditionalData: models.AdditionalData{StatusCode: http.StatusBadRequest},
-		}
+		return utils.NewCCBadRequestError(constants.InvalidAccountIdErrMsg)
 	}
 
 	return nil
@@ -71,4 +72,22 @@ func buildTransactionDocument(request models.CreateTransactionRequest) model.Tra
 		CreatedAt:     currentTime().UnixMilli(),
 		UpdatedAt:     currentTime().UnixMilli(),
 	}
+}
+
+func validateTransactionRules(request models.CreateTransactionRequest) error {
+	operationType := strings.ToLower(request.OperationType)
+
+	switch operationType {
+	case constants.OpTypeCashPurchase, constants.OpTypeInstallmentPurchase, constants.OpTypeWithdrawal:
+		if request.Amount > 0 {
+			return errors.New(constants.AmountMustBeNegativeErrMsg)
+		}
+	case constants.OpTypePayment:
+		if request.Amount < 0 {
+			return errors.New(constants.AmountMustBePositiveErrMsg)
+		}
+	default:
+		return errors.New(constants.InvalidOperationTypeErrMsg)
+	}
+	return nil
 }

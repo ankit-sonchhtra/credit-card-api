@@ -26,7 +26,10 @@ func NewUserService(usersRepo repository.UserRepository) UserService {
 }
 
 func (as *userService) CreateUser(ctx context.Context, request models.CreateUserRequest) (*models.CreateUserResponse, *models.CCError) {
-	user, err := as.usersRepo.GetUser(ctx, request.MobileNumber)
+	filters := make(map[string]interface{})
+	filters[constants.MobileNumberFilter] = request.MobileNumber
+
+	user, err := as.usersRepo.GetUserByFilters(ctx, filters)
 	if err != nil {
 		return nil, utils.NewCCInternalServerError()
 	}

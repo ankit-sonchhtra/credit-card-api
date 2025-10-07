@@ -25,16 +25,22 @@ type AccountService interface {
 
 type accountService struct {
 	accountsRepo repository.AccountRepository
+	userRepo     repository.UserRepository
 }
 
-func NewAccountService(accountRepo repository.AccountRepository) AccountService {
-	return &accountService{accountsRepo: accountRepo}
+func NewAccountService(accountRepo repository.AccountRepository, userRepo repository.UserRepository) AccountService {
+	return &accountService{accountsRepo: accountRepo, userRepo: userRepo}
 }
 
 func (as *accountService) CreateAccount(ctx context.Context, request models.CreateAccountRequest) (*models.CreateAccountResponse, *models.CCError) {
-	accountDocument := buildAccountDocument(request)
-	err := as.accountsRepo.CreateAccount(ctx, accountDocument)
+	err := as.validateUserExist(ctx, request)
 	if err != nil {
+		return nil, err
+	}
+
+	accountDocument := buildAccountDocument(request)
+	createErr := as.accountsRepo.CreateAccount(ctx, accountDocument)
+	if createErr != nil {
 		return nil, utils.NewCCInternalServerError()
 	}
 
@@ -63,6 +69,22 @@ func (as *accountService) GetAccount(ctx context.Context, id string) (*models.Ge
 		DocumentNumber: accountDocument.DocumentNumber,
 		UserId:         accountDocument.UserId,
 	}, nil
+}
+
+func (as *accountService) validateUserExist(ctx context.Context, request models.CreateAccountRequest) *models.CCError {
+	filters := make(map[string]interface{})
+	filters[constants.UserIdFilter] = request.UserId
+
+	user, err := as.userRepo.GetUserByFilters(ctx, filters)
+	if err != nil {
+		return utils.NewCCInternalServerError()
+	}
+
+	if user == nil {
+		return utils.NewCCBadRequestError(constants.InvalidUserIdErrMsg)
+	}
+
+	return nil
 }
 
 func buildAccountDocument(request models.CreateAccountRequest) model.AccountDocument {

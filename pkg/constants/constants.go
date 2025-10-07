@@ -10,6 +10,7 @@ var (
 
 	AccountIdPathParam = "accountId"
 	AccountIdFilter    = "account_id"
+	UserIdFilter       = "user_id"
 	MobileNumberFilter = "mobile_number"
 
 	BadRequestErrCode        = "ERR_CC_BAD_REQUEST"
@@ -21,10 +22,12 @@ var (
 	InvalidMobileNumberErrMsg  = "invalid mobile number"
 	InternalServerErrMsg       = "internal server error"
 	AccountNotPresentErrMsg    = "account not present"
+	AmountCanNotBeZeroErrMsg   = "amount value can not be zero"
 	AmountMustBeNegativeErrMsg = "amount must be negative for purchases and withdrawals"
 	AmountMustBePositiveErrMsg = "amount must be positive for payments"
 	InvalidOperationTypeErrMsg = "invalid operation type"
 	InvalidAccountIdErrMsg     = "account does not exists with requested accountId"
+	InvalidUserIdErrMsg        = "user does not exists with requested userId"
 	AccountIdMissingErrMsg     = "accountId is missing in path params"
 	UserAlreadyExistErrMsg     = "user already exist with requested mobile number"
 
