@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: credit_card_api
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/migrations/init_schema.sql:/docker-entrypoint-initdb.d/init_schema.sql
+
+  credit-card-api:
+    build:
+      context: .
+      dockerfile: infrastructure/Dockerfile
+    image: credit-card-api:latest
+    container_name: credit-card-api
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=postgresql://user:password@postgres:5432/credit_card_api?sslmode=disable
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+volumes:
+  db_data:

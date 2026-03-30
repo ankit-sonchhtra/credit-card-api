@@ -1,0 +1,288 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/credit-card-api/v1/accounts": {
+            "post": {
+                "description": "Create an account by request payload",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Create an account",
+                "parameters": [
+                    {
+                        "description": "Request Body",
+                        "name": "CreateAccountRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateAccountRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateAccountResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.BadRequestError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/models.ConflictError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.InternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/credit-card-api/v1/accounts/{accountId}": {
+            "get": {
+                "description": "Get an account by accountId",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Get an account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "accountId",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetAccountResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.NotFoundError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.InternalServerError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/credit-card-api/v1/transactions": {
+            "post": {
+                "description": "Create transaction by request payload",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Create transaction",
+                "parameters": [
+                    {
+                        "description": "Request Body",
+                        "name": "CreateTransactionRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.TransactionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateTransactionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.BadRequestError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.InternalServerError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.BadRequestError": {
+            "type": "object",
+            "properties": {
+                "error_code": {
+                    "type": "string",
+                    "example": "ERR_CC_BAD_REQUEST"
+                },
+                "error_message": {
+                    "type": "string",
+                    "example": "invalid request body"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 400
+                }
+            }
+        },
+        "models.ConflictError": {
+            "type": "object",
+            "properties": {
+                "error_code": {
+                    "type": "string",
+                    "example": "ERR_CC_CONFLICT"
+                },
+                "error_message": {
+                    "type": "string",
+                    "example": "resource already exist"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 409
+                }
+            }
+        },
+        "models.CreateAccountRequest": {
+            "type": "object",
+            "required": [
+                "document_number"
+            ],
+            "properties": {
+                "document_number": {
+                    "description": "only allow numeric value",
+                    "type": "string",
+                    "maxLength": 12,
+                    "example": "0987654321"
+                }
+            }
+        },
+        "models.CreateAccountResponse": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "document_number": {
+                    "type": "string",
+                    "example": "0987654321"
+                }
+            }
+        },
+        "models.CreateTransactionResponse": {
+            "type": "object",
+            "properties": {
+                "transaction_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "models.GetAccountResponse": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "document_number": {
+                    "type": "string",
+                    "example": "0987654321"
+                }
+            }
+        },
+        "models.InternalServerError": {
+            "type": "object",
+            "properties": {
+                "error_code": {
+                    "type": "string",
+                    "example": "ERR_CC_INTERNAL_SERVER_ERROR"
+                },
+                "error_message": {
+                    "type": "string",
+                    "example": "internal server error"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 500
+                }
+            }
+        },
+        "models.NotFoundError": {
+            "type": "object",
+            "properties": {
+                "error_code": {
+                    "type": "string",
+                    "example": "ERR_CC_ACCOUNT_NOT_PRESENT"
+                },
+                "error_message": {
+                    "type": "string",
+                    "example": "account not present"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 404
+                }
+            }
+        },
+        "models.TransactionRequest": {
+            "type": "object",
+            "required": [
+                "account_id",
+                "amount",
+                "operation_type_id"
+            ],
+            "properties": {
+                "account_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "amount": {
+                    "type": "number",
+                    "example": -123.45
+                },
+                "operation_type_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        }
+    }
+}
