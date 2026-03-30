@@ -87,7 +87,7 @@ definitions:
         example: 1
         type: integer
       amount:
-        example: -123.45
+        example: 123.45
         type: number
       operation_type_id:
         example: 1
@@ -96,6 +96,18 @@ definitions:
     - account_id
     - amount
     - operation_type_id
+    type: object
+  models.UnprocessableEntityError:
+    properties:
+      error_code:
+        example: ERR_CC_TRANSACTION_ACCOUNT_NOT_FOUND
+        type: string
+      error_message:
+        example: account does not exist with provided id.
+        type: string
+      status_code:
+        example: 422
+        type: integer
     type: object
 info:
   contact: {}
@@ -184,6 +196,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.BadRequestError'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/models.UnprocessableEntityError'
         "500":
           description: Internal Server Error
           schema:

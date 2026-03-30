@@ -33,6 +33,6 @@ func main() {
 
 	err := http.ListenAndServe(":8080", router)
 	if err != nil {
-		logger.Fatal("failed to start server")
+		logger.Fatal("failed to start server, error: ", err.Error())
 	}
 }

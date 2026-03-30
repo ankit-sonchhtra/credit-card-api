@@ -9,6 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
+      - db_data:/var/lib/postgresql/data
       - ./db/migrations/init_schema.sql:/docker-entrypoint-initdb.d/init_schema.sql
 
   credit-card-api:
