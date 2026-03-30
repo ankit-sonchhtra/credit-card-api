@@ -80,21 +80,21 @@ make stop_postgres
 
 accounts
 
-| Field Name        | Type        |
-|-------------------|-------------|
-| `account_id`      | `BIGINT`    |
-| `document_number` | `VARCHAR`   |
-| `created_at`      | `TIMESTAMP` |
+| Field Name        | Type        | Relation |
+|-------------------|-------------|----------|
+| `account_id`      | `BIGINT`    | PK       |
+| `document_number` | `VARCHAR`   |          |
+| `created_at`      | `TIMESTAMP` |          |
 
 transactions
 
-| Field Name       | Type        |
-|------------------|-------------|
-| `transaction_id` | `BIGINT`    |
-| `account_id`     | `BIGINT`    |
-| `operation_type` | `BIGINT`    |
-| `amount`         | `NUMERIC`   |
-| `created_at`     | `TIMESTAMP` |
+| Field Name       | Type        | Relation                                  |
+|------------------|-------------|-------------------------------------------|
+| `transaction_id` | `BIGINT`    | PK                                        |
+| `account_id`     | `BIGINT`    | FK (-> accounts.account_id)               |
+| `operation_type` | `BIGINT`    | FK (-> operation_types.operation_type_id) |
+| `amount`         | `NUMERIC`   |                                           |
+| `created_at`     | `TIMESTAMP` |                                           |
 
 operation_types
 
