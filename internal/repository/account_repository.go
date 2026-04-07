@@ -28,7 +28,7 @@ func NewAccountRepository(querier sqlc.Querier) AccountRepository {
 }
 
 func (ar *accountRepository) Create(ctx context.Context, accountParam domain.CreateAccountParam) (domainAccount *domain.Account, err error) {
-	account, err := ar.querier.CreateAccount(ctx, accountParam.DocumentNumber)
+	account, err := ar.getQuerier(ctx).CreateAccount(ctx, accountParam.DocumentNumber)
 	if err != nil {
 		logger.Error("error while create an account: ", err.Error())
 		if isUniqueViolation(err) {
@@ -41,7 +41,7 @@ func (ar *accountRepository) Create(ctx context.Context, accountParam domain.Cre
 }
 
 func (ar *accountRepository) GetById(ctx context.Context, id int64) (domainAccount *domain.Account, err error) {
-	account, err := ar.querier.GetAccountByID(ctx, id)
+	account, err := ar.getQuerier(ctx).GetAccountByID(ctx, id)
 	if err != nil {
 		logger.Errorf("error while fetch account by id:%d, error: %s", id, err.Error())
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -67,4 +67,12 @@ func mapToDomainAccount(account sqlc.Account) *domain.Account {
 		DocumentNumber: account.DocumentNumber,
 		CreatedAt:      account.CreatedAt.Time,
 	}
+}
+
+// Helper to switch between Pool and Transaction
+func (ar *accountRepository) getQuerier(ctx context.Context) sqlc.Querier {
+	if tx, ok := ctx.Value(txKey{}).(pgx.Tx); ok {
+		return sqlc.New(tx)
+	}
+	return ar.querier
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/credit-card-api/internal/domain"
 	"github.com/credit-card-api/internal/repository/sqlc"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 	logger "github.com/sirupsen/logrus"
 )
@@ -25,7 +26,7 @@ func NewTransactionRepository(querier sqlc.Querier) TransactionRepository {
 }
 
 func (tr *transactionRepository) Create(ctx context.Context, transactionParam domain.CreateTransactionParam) (*domain.Transaction, error) {
-	transaction, err := tr.querier.CreateTransaction(ctx, sqlc.CreateTransactionParams{
+	transaction, err := tr.getQuerier(ctx).CreateTransaction(ctx, sqlc.CreateTransactionParams{
 		AccountID:       transactionParam.AccountId,
 		OperationTypeID: transactionParam.OperationTypeId,
 		Amount:          float64ToNumeric(transactionParam.Amount),
@@ -64,4 +65,11 @@ func mapToDomainTransaction(transaction sqlc.Transaction) *domain.Transaction {
 		Amount:          numericToFloat64(transaction.Amount),
 		CreatedAt:       transaction.CreatedAt.Time,
 	}
+}
+
+func (tr *transactionRepository) getQuerier(ctx context.Context) sqlc.Querier {
+	if tx, ok := ctx.Value(txKey{}).(pgx.Tx); ok {
+		return sqlc.New(tx)
+	}
+	return tr.querier
 }
