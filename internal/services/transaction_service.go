@@ -54,14 +54,12 @@ func (ts *transactionService) CreateTransaction(ctx context.Context, request mod
 			}
 		}
 		// 60,
-
 		// -50. 23.5, -18.7
 		remainingBalance := request.Amount
 		var updatedBalance float64
 
 		for _, tx := range transactions {
-
-			if remainingBalance > tx.Balance {
+			if remainingBalance > tx.Balance && remainingBalance > 0 {
 				remainingBalance = remainingBalance + tx.Balance
 				if remainingBalance > 0 {
 					transactionUpdateErr := ts.transactionRepo.UpdateTransactionById(ctx, tx.Id, 0.0)
