@@ -12,32 +12,73 @@ import (
 )
 
 const createTransaction = `-- name: CreateTransaction :one
-INSERT INTO transactions (account_id, operation_type_id, amount)
-VALUES ($1, $2, $3)
-    RETURNING transaction_id, account_id, operation_type_id, amount, created_at
+INSERT INTO transactions (account_id, operation_type_id, amount, balance)
+VALUES ($1, $2, $3, $4)
+    RETURNING transaction_id, account_id, operation_type_id, amount, balance, created_at
 `
 
 type CreateTransactionParams struct {
 	AccountID       int64          `json:"account_id"`
 	OperationTypeID int64          `json:"operation_type_id"`
 	Amount          pgtype.Numeric `json:"amount"`
+	Balance         pgtype.Numeric `json:"balance"`
 }
 
 func (q *Queries) CreateTransaction(ctx context.Context, arg CreateTransactionParams) (Transaction, error) {
-	row := q.db.QueryRow(ctx, createTransaction, arg.AccountID, arg.OperationTypeID, arg.Amount)
+	row := q.db.QueryRow(ctx, createTransaction,
+		arg.AccountID,
+		arg.OperationTypeID,
+		arg.Amount,
+		arg.Balance,
+	)
 	var i Transaction
 	err := row.Scan(
 		&i.TransactionID,
 		&i.AccountID,
 		&i.OperationTypeID,
 		&i.Amount,
+		&i.Balance,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
+const getAllTransactionById = `-- name: GetAllTransactionById :many
+SELECT transaction_id, account_id, operation_type_id, amount, balance, created_at
+FROM transactions
+WHERE account_id = $1
+ORDER BY created_at ASC
+`
+
+func (q *Queries) GetAllTransactionById(ctx context.Context, accountID int64) ([]Transaction, error) {
+	rows, err := q.db.Query(ctx, getAllTransactionById, accountID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Transaction
+	for rows.Next() {
+		var i Transaction
+		if err := rows.Scan(
+			&i.TransactionID,
+			&i.AccountID,
+			&i.OperationTypeID,
+			&i.Amount,
+			&i.Balance,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getTransaction = `-- name: GetTransaction :one
-SELECT transaction_id, account_id, operation_type_id, amount, created_at FROM transactions
+SELECT transaction_id, account_id, operation_type_id, amount, balance, created_at FROM transactions
 WHERE transaction_id = $1 LIMIT 1
 `
 
@@ -49,13 +90,14 @@ func (q *Queries) GetTransaction(ctx context.Context, transactionID int64) (Tran
 		&i.AccountID,
 		&i.OperationTypeID,
 		&i.Amount,
+		&i.Balance,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const listTransactionsByAccount = `-- name: ListTransactionsByAccount :many
-SELECT transaction_id, account_id, operation_type_id, amount, created_at FROM transactions
+SELECT transaction_id, account_id, operation_type_id, amount, balance, created_at FROM transactions
 WHERE account_id = $1
 ORDER BY created_at DESC
 `
@@ -74,6 +116,7 @@ func (q *Queries) ListTransactionsByAccount(ctx context.Context, accountID int64
 			&i.AccountID,
 			&i.OperationTypeID,
 			&i.Amount,
+			&i.Balance,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -84,4 +127,30 @@ func (q *Queries) ListTransactionsByAccount(ctx context.Context, accountID int64
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateTransaction = `-- name: UpdateTransaction :one
+UPDATE transactions
+SET balance = $2
+WHERE transaction_id = $1
+    RETURNING transaction_id, account_id, operation_type_id, amount, balance, created_at
+`
+
+type UpdateTransactionParams struct {
+	TransactionID int64          `json:"transaction_id"`
+	Balance       pgtype.Numeric `json:"balance"`
+}
+
+func (q *Queries) UpdateTransaction(ctx context.Context, arg UpdateTransactionParams) (Transaction, error) {
+	row := q.db.QueryRow(ctx, updateTransaction, arg.TransactionID, arg.Balance)
+	var i Transaction
+	err := row.Scan(
+		&i.TransactionID,
+		&i.AccountID,
+		&i.OperationTypeID,
+		&i.Amount,
+		&i.Balance,
+		&i.CreatedAt,
+	)
+	return i, err
 }

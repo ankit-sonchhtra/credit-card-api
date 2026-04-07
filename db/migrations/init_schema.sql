@@ -17,6 +17,7 @@ CREATE TABLE transactions
     account_id        BIGINT            NOT NULL REFERENCES accounts (account_id),
     operation_type_id BIGINT            NOT NULL REFERENCES operation_types (operation_type_id),
     amount            NUMERIC(15, 2) NOT NULL,
+    balance            NUMERIC(15, 2) NOT NULL,
     created_at        TIMESTAMPTZ    NOT NULL DEFAULT NOW()
 );
 

@@ -12,8 +12,10 @@ type Querier interface {
 	CreateAccount(ctx context.Context, documentNumber string) (Account, error)
 	CreateTransaction(ctx context.Context, arg CreateTransactionParams) (Transaction, error)
 	GetAccountByID(ctx context.Context, accountID int64) (Account, error)
+	GetAllTransactionById(ctx context.Context, accountID int64) ([]Transaction, error)
 	GetTransaction(ctx context.Context, transactionID int64) (Transaction, error)
 	ListTransactionsByAccount(ctx context.Context, accountID int64) ([]Transaction, error)
+	UpdateTransaction(ctx context.Context, arg UpdateTransactionParams) (Transaction, error)
 }
 
 var _ Querier = (*Queries)(nil)

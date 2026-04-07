@@ -15,6 +15,8 @@ import (
 
 type TransactionRepository interface {
 	Create(ctx context.Context, transactionParam domain.CreateTransactionParam) (*domain.Transaction, error)
+	GetAllTransactions(ctx context.Context, accountId int64) ([]domain.Transaction, error)
+	UpdateTransactionById(ctx context.Context, transactionId int64, balance float64) error
 }
 
 type transactionRepository struct {
@@ -30,6 +32,7 @@ func (tr *transactionRepository) Create(ctx context.Context, transactionParam do
 		AccountID:       transactionParam.AccountId,
 		OperationTypeID: transactionParam.OperationTypeId,
 		Amount:          float64ToNumeric(transactionParam.Amount),
+		Balance:         float64ToNumeric(transactionParam.Balance),
 	})
 
 	if err != nil {
@@ -38,6 +41,31 @@ func (tr *transactionRepository) Create(ctx context.Context, transactionParam do
 	}
 	logger.Info("transaction created successfully in db.")
 	return mapToDomainTransaction(transaction), nil
+}
+
+func (tr *transactionRepository) GetAllTransactions(ctx context.Context, accountId int64) ([]domain.Transaction, error) {
+	var transactionList []domain.Transaction
+	transactions, err := tr.getQuerier(ctx).GetAllTransactionById(ctx, accountId)
+	if err != nil {
+		logger.Errorf("error while fetch all transactions: %s", err.Error())
+		return nil, err
+	}
+	for _, tx := range transactions {
+		transactionList = append(transactionList, *mapToDomainTransaction(tx))
+	}
+	return transactionList, nil
+}
+
+func (tr *transactionRepository) UpdateTransactionById(ctx context.Context, transactionId int64, balance float64) error {
+	_, err := tr.getQuerier(ctx).UpdateTransaction(ctx, sqlc.UpdateTransactionParams{
+		TransactionID: transactionId,
+		Balance:       float64ToNumeric(balance),
+	})
+	if err != nil {
+		logger.Errorf("error while fetch all transactions: %s", err.Error())
+		return err
+	}
+	return nil
 }
 
 func float64ToNumeric(val float64) pgtype.Numeric {
@@ -63,6 +91,7 @@ func mapToDomainTransaction(transaction sqlc.Transaction) *domain.Transaction {
 		AccountId:       transaction.AccountID,
 		OperationTypeId: transaction.OperationTypeID,
 		Amount:          numericToFloat64(transaction.Amount),
+		Balance:         numericToFloat64(transaction.Balance),
 		CreatedAt:       transaction.CreatedAt.Time,
 	}
 }

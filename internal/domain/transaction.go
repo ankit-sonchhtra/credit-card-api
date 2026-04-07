@@ -6,6 +6,7 @@ type CreateTransactionParam struct {
 	AccountId       int64
 	OperationTypeId int64
 	Amount          float64
+	Balance         float64
 }
 
 type Transaction struct {
@@ -13,6 +14,7 @@ type Transaction struct {
 	AccountId       int64
 	OperationTypeId int64
 	Amount          float64
+	Balance         float64
 	CreatedAt       time.Time
 }
 
